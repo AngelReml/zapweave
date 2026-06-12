@@ -295,10 +295,10 @@ h2{font-size:clamp(1.5rem,3vw,2.1rem);font-weight:800;letter-spacing:-.02em;line
 <section id="herramienta">
   <div class="inner">
     <div class="stag">Pruébelo ahora</div>
-    <h2>Diagnostique un cliente en 60 segundos.</h2>
+    <h2>Audite un cliente en 60 segundos.</h2>
     <p class="ssub">La misma lógica normativa que aplicamos a carteras completas: RD 1007/2023, Orden HAC/1177/2024 y calendario vigente. Al finalizar, podrá imprimir el informe.</p>
     <div class="tw">
-      <div class="th"><span class="tt">Auditoría exprés Verifactu</span><span class="ts" id="step">INICIO</span></div>
+      <div class="th"><span class="tt">Auditoría Verifactu</span><span class="ts" id="step">INICIO</span></div>
       <div class="prog"><div id="pbar"></div></div>
       <div class="tb" id="tbody"></div>
     </div>
@@ -368,14 +368,14 @@ async function lead(asunto,datos){
 function mailto(s,b){location.href='mailto:'+VG_EMAIL+'?subject='+encodeURIComponent(s)+'&body='+encodeURIComponent(b)}
 
 const QS=[
- {id:'nombre',type:'input',label:'INICIO',q:'¿Qué negocio desea diagnosticar?',help:'Nombre o denominación. Aparecerá en el informe.',ph:'Ej.: Panadería San Roque, S.L.',btn:'Empezar',def:'Negocio sin identificar'},
+ {id:'nombre',type:'input',label:'INICIO',q:'Nombre del cliente a auditar',help:'Nombre o denominación. Aparecerá en el informe.',ph:'Ej.: Panadería San Roque, S.L.',btn:'Empezar',def:'Negocio sin identificar'},
  {id:'tipo',label:'PREGUNTA 1 / 7',q:'¿Qué tipo de contribuyente es?',opts:[
    {v:'pj',t:'Sociedad / entidad',s:'IS — plazo 01/01/2027'},
    {v:'pf',t:'Autónomo / profesional',s:'IRPF — plazo 01/07/2027'}]},
  {id:'territorio',label:'PREGUNTA 2 / 7',q:'¿Dónde tiene su domicilio fiscal?',opts:[
    {v:'comun',t:'Territorio común',s:'Resto de España'},
    {v:'foral',t:'País Vasco o Navarra',s:'TicketBAI / normativa foral'}]},
- {id:'sii',label:'PREGUNTA 3 / 7',q:'¿Está acogido al SII?',help:'Quien lleva los libros de IVA por SII queda fuera de Verifactu.',opts:[
+ {id:'sii',label:'PREGUNTA 3 / 7',q:'¿Está acogido al SII?',help:'Quien lleva los libros de IVA por SII está excluido de Verifactu.',opts:[
    {v:'no',t:'No',s:'La mayoría de pymes y autónomos'},
    {v:'si',t:'Sí',s:'Libros por sede electrónica'},
    {v:'ns',t:'No lo sé',s:'Se verifica en el expediente'}]},
@@ -405,13 +405,13 @@ function evaluate(a){
   const base={pt:fmt(plazo)+(a.tipo==='pj'?' (IS)':' (IRPF)'),d:dias(plazo)};
   if(a.territorio==='foral')return{...base,niv:'FUERA',sel:'FUERA DE ÁMBITO',tit:'No sujeto a Verifactu: aplica la normativa foral (TicketBAI o equivalente).',san:'—',plan:['Verificar el sistema foral correspondiente.','Confirmar que el software cumple la normativa foral.','Cerrar expediente con nota de exclusión y revisión anual.']};
   if(a.sii==='si')return{...base,niv:'FUERA',sel:'FUERA DE ÁMBITO',tit:'Excluido del RRSIF por adscripción al SII.',san:'—',plan:['Documentar la adscripción efectiva al SII.','Verificar la llevanza de libros al día.','Vigilar: si abandona el SII pasa a obligado.']};
-  if(a.metodo==='papel')return{...base,niv:'RIESGO',sel:'EXENTO CON MATICES',tit:'La facturación 100% manual en papel queda fuera del reglamento, pero es una posición frágil.',san:'Sin exposición directa mientras no use ningún sistema informático.',plan:['Documentar la ausencia total de sistema informático (ni Excel ocasional).','Advertir: cualquier software lo convierte en obligado.','Valorar digitalización voluntaria a software conforme.']};
+  if(a.metodo==='papel')return{...base,niv:'RIESGO',sel:'EXENTO CON MATICES',tit:'La facturación 100% manual en papel está excluido del reglamento, pero es una posición frágil.',san:'Sin exposición directa mientras no use ningún sistema informático.',plan:['Documentar la ausencia total de sistema informático (ni Excel ocasional).','Advertir: cualquier software lo convierte en obligado.','Valorar digitalización voluntaria a software conforme.']};
   if(a.metodo==='excel')return{...base,niv:'CRITICO',sel:'CRÍTICO',tit:'Word y Excel son sistemas informáticos no adaptables: necesita migración.',san:'Exposición de hasta 50.000 € por ejercicio (art. 201 bis LGT).',plan:['Exportar el histórico y conservarlo fuera del sistema nuevo (sin reteclear nada).','Seleccionar software conforme según volumen.','Migrar maestros: clientes, productos, series.','Verificar la declaración responsable del proveedor nuevo.','Prueba real: factura test, QR, cotejo en sede AEAT.','Formación (45 min).']};
   const sw=a.sw&&a.sw!=='no indicado'?' («'+a.sw+'»)':'';
   const ps=['Verificar la declaración responsable del fabricante'+sw+' y que cubre la versión instalada.','Decidir modalidad: VERI*FACTU (remisión inmediata) o no-VERI*FACTU (firma + eventos).',(a.simp==='si'?'Verificar el QR en tickets simplificados (30–40 mm) en cada TPV.':'Verificar el QR en factura completa (30–40 mm).'),'Probar el encadenamiento de registros y el registro de eventos.','Cerrar expediente con evidencias (declaración, capturas, factura test, acuse AEAT).'];
   if(a.hom==='si')return{...base,niv:'ADAPTADO',sel:'ADAPTADO',tit:'El software'+sw+' declara cumplimiento: queda verificar que la adaptación es real y elegir modalidad.',san:'Baja, condicionada a declaración veraz y configuración correcta.',plan:ps};
   const crit=a.hom==='no';
-  return{...base,niv:crit?'CRITICO':'RIESGO',sel:crit?'CRÍTICO':'EN RIESGO',tit:crit?'El proveedor'+sw+' no confirma la adaptación: exigirla por escrito con fecha, o migrar.':'La conformidad del software'+sw+' está sin verificar. Es el caso más común — y el más sencillo de resolver ahora.',san:'Hasta 50.000 € por ejercicio si el sistema no cumple (art. 201 bis LGT).',plan:[crit?'Requerir por escrito un compromiso de adaptación con fecha; sin compromiso, migrar.':'Identificar proveedor y versión exacta.',...ps]};
+  return{...base,niv:crit?'CRITICO':'RIESGO',sel:crit?'CRÍTICO':'EN RIESGO',tit:crit?'El proveedor'+sw+' no confirma la adaptación: exigirla por escrito con fecha, o migrar.':'La conformidad del software'+sw+' está sin verificar. Caso frecuente y de rápida resolución.',san:'Hasta 50.000 € por ejercicio si el sistema no cumple (art. 201 bis LGT).',plan:[crit?'Requerir por escrito un compromiso de adaptación con fecha; sin compromiso, migrar.':'Identificar proveedor y versión exacta.',...ps]};
 }
 
 function render(){
